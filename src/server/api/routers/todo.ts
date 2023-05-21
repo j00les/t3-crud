@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import {
   createTRPCRouter,
   publicProcedure,
@@ -7,4 +9,15 @@ export const toDoRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.todo.findMany()
   }),
+
+  addTodo: publicProcedure
+    .input(z.object({ name: z.string(), isDone: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.todo.create({
+        data: {
+          ...input
+        }
+      })
+    }),
 });
+
