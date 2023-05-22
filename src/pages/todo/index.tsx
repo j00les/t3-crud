@@ -1,13 +1,14 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-import { type RouterOutputs } from "~/utils/api";
 
+import { type RouterOutputs } from "~/utils/api";
 import { api } from "~/utils/api";
 
 
 const ToDoPage: NextPage = () => {
-  const { data } = api.todo.getAll.useQuery()
+
+  api.todo.getAll.useQuery()
 
   return (
     <>
@@ -19,27 +20,35 @@ const ToDoPage: NextPage = () => {
       <main className="flex justify-center h-screen items-center">
         <div>
           <InputToDo />
-          <div id='container' className="border border-red-400 p-5 flex flex-col gap-4">
-            {
-              data?.map(todoData => (
-                <ToDo {...todoData} key={todoData.id} />
-              ))
-            }
-          </div>
+          <ToDoList />
         </div>
       </main>
     </>
   )
 }
 
+const ToDoList = () => {
+  const { data } = api.todo.getAll.useQuery()
+
+  return (
+    <div id='container' className="border border-red-400 p-5 flex flex-col gap-4">
+      {
+        data?.map(todoData => (
+          <ToDo {...todoData} key={todoData.id} />
+        ))
+      }
+    </div>
+  )
+}
+
 //move later
 type TodoData = RouterOutputs["todo"]["getAll"][number];
 const ToDo = (props: TodoData) => {
-  const { name, isDone } = props
+  const { name } = props
 
   return (
     < div className="border border-blue-400 p-2" >
-      <h1 className="font-bold">coba</h1>
+      <h1 className="font-bold">lorem todo title</h1>
       <section className="flex">
         <p className="">{name}</p>
         <input type="checkbox" />
@@ -52,8 +61,13 @@ const ToDo = (props: TodoData) => {
 const InputToDo: React.FC = () => {
   const [input, setInput] = useState('')
 
+  const ctx = api.useContext();
 
   const { mutate } = api.todo.addTodo.useMutation({
+    onSuccess: () => {
+      setInput("");
+      void ctx.todo.getAll.invalidate();
+    },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors.content;
       if (errorMessage && errorMessage[0]) {
@@ -64,11 +78,10 @@ const InputToDo: React.FC = () => {
     },
   });
 
-
   return (
     <div className="border border-yellow-400 p-2 flex flex-col">
       <div>
-        <label htmlFor="todo-input">mo ngapain?</label>
+        <label htmlFor="todo-input">add some more</label>
         <input
           className="border border-yellow-700"
           type="text"
