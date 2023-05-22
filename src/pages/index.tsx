@@ -50,6 +50,9 @@ const Home: NextPage = () => {
             </p>
             <AuthShowcase />
           </div>
+          <Link className="text-white border border-cyan-700 p-2" href={'/todo'}>
+            ayo sini
+          </Link>
         </div>
       </main>
     </>
