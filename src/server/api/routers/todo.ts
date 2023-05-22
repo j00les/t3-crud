@@ -13,13 +13,11 @@ export const toDoRouter = createTRPCRouter({
   addTodo: publicProcedure
     .input(z.object({ name: z.string(), isDone: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
-      const todo = await ctx.prisma.todo.create({
+      await ctx.prisma.todo.create({
         data: {
           ...input
         }
       })
-
-      return todo
     }),
 });
 
