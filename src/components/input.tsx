@@ -4,12 +4,12 @@ import { api } from "~/utils/api";
 
 const Input = () => {
 	const [input, setInput] = useState('')
-
 	const ctx = api.useContext();
 
 	const { mutate } = api.todo.addTodo.useMutation({
 		onSuccess: () => {
 			setInput("");
+			//invalidate in order to get updated data
 			void ctx.todo.getAll.invalidate();
 		},
 		onError: (e) => {
