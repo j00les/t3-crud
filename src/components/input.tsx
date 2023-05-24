@@ -9,7 +9,7 @@ const Input = () => {
 	const { mutate } = api.todo.addTodo.useMutation({
 		onSuccess: () => {
 			setInput("");
-			//invalidate in order to get updated data
+			//invalidate in order to get updated todo data
 			void ctx.todo.getAll.invalidate();
 		},
 		onError: (e) => {
